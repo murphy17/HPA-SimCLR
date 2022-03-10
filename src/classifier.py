@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.preprocessing import StandardScaler
 from scipy.special import logsumexp, softmax, log_softmax, logit
@@ -6,6 +8,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.optim import Adam
+from tqdm import tqdm
 
 class SoftmaxRegression(BaseEstimator, RegressorMixin):
     def __init__(
@@ -54,7 +57,7 @@ class SoftmaxRegression(BaseEstimator, RegressorMixin):
 
         iterator = range(self.max_iters)
         if self.verbose:
-            iterator = tqdm(iterator)
+            iterator = tqdm(iterator,position=0)
         for t in iterator:
             Y_hat = self.model(X)
             loss = F.cross_entropy(Y_hat, Y, reduction='sum') + self.alpha * self.model.weight.square().sum()
@@ -89,3 +92,25 @@ class SoftmaxRegression(BaseEstimator, RegressorMixin):
         loss = F.cross_entropy(Y_hat, Y, reduction='sum').item()
         
         return loss
+    
+# one-vs-rest platt scaling
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_predict, KFold
+
+def platt_scaling(scores, labels):
+    lm = LogisticRegression(penalty='none')
+    idx = list(set(scores.index)&set(labels.index))
+    scores = {region:cross_val_predict(
+        lm,
+        scores.loc[idx],
+        labels[region][idx],
+        cv=KFold(5,shuffle=True,random_state=0),
+        method='predict_proba'
+    )[:,1] for region in labels.columns}
+    scores = pd.DataFrame(
+        scores,
+        index=idx,
+        columns=labels.columns
+    )
+    scores /= scores.sum(1).values[:,None]
+    return scores

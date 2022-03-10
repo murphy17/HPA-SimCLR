@@ -11,6 +11,7 @@ from pytorch_lightning import LightningDataModule
 from torchvision import transforms
 
 IMAGE = 'image'
+NAME = 'name'
 
 def cv2_imread(path):
     path = str(path)
@@ -115,7 +116,9 @@ class ContrastiveDataModule(LightningDataModule):
             with open(json_path,'r') as f:
                 data = json.load(f)
             if self.indicator(data):
+                img_name = json_path.split('/')[-1].replace('.json','')
                 img_path = json_path.replace('.json','.'+self.image_ext)
+                data[NAME] = img_name
                 data[IMAGE] = tio.ScalarImage(
                     img_path, 
                     reader=lambda path: (cv2_imread(path), None),
