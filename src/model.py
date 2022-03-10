@@ -11,7 +11,8 @@ class ContrastiveEmbedding(LightningModule):
     def __init__(
         self,
         embedding_dim,
-        encoder_type='densenet-121',
+        patch_size,
+        encoder_type='densenet121',
         temperature=1.0,
         learning_rate=5e-4,
         negative_masking=True,
@@ -21,6 +22,7 @@ class ContrastiveEmbedding(LightningModule):
         self.save_hyperparameters()
         
         self.embedding_dim = embedding_dim
+        self.patch_size = patch_size
         self.encoder_type = encoder_type
         self.temperature = temperature
         self.learning_rate = learning_rate
@@ -45,9 +47,34 @@ class ContrastiveEmbedding(LightningModule):
             nn.Linear(embedding_dim, embedding_dim),
         )
         
+        self._transform = nn.Sequential(
+            ka.RandomAffine(
+                degrees=180,
+                scale=(0.8,1.2),
+                padding_mode=1,
+                p=0.5
+            ),
+            ka.RandomCrop(
+                (self.patch_size, self.patch_size),
+                p=1.0
+            ),
+            ka.ColorJitter(
+                brightness=0.1, 
+                contrast=0.1, 
+                saturation=0.1, 
+                hue=0.1, 
+                p=0.5
+            )
+        )
+        
+    def transform(self, x):
+        with torch.cuda.amp.autocast(enabled=False):
+            x = x.to(torch.float32)
+            x = self._transform(x)
+            return x
+        
     def forward(self, x):
-        h = self.encoder(x)
-        z = self.projection_head(h)
+        z = self.encoder(x)
         return z
     
     def _get_encoder(self, encoder_type):
@@ -94,6 +121,9 @@ class ContrastiveEmbedding(LightningModule):
         N = x1.shape[0]
         d1, d2 = batch1['Patient'], batch2['Patient']
         
+        x1 = self.transform(x1)
+        x2 = self.transform(x2)
+        
         z1 = self.encoder(x1)
         z2 = self.encoder(x2)
         
@@ -119,11 +149,6 @@ class ContrastiveEmbedding(LightningModule):
         self.log('infonce_loss', infonce_loss)
         
         return infonce_loss
-    
-    def predict_step(self, batch, batch_idx):
-        x = batch['image']
-        z = self.encoder(x)
-        return z
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(

@@ -18,6 +18,19 @@ def cv2_imread(path):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image
 
+class apply_transform(Dataset):
+    def __init__(self, dataset, transform):
+        self.dataset = dataset
+        self.transform = transform
+        
+    def __getitem__(self, idx):
+        item = self.dataset[idx]
+        item = self.transform(item)
+        return item
+    
+    def __len__(self):
+        return len(self.dataset)
+
 class GroupSampler(Dataset):
     def __init__(
         self, 
@@ -62,7 +75,7 @@ class ContrastiveDataModule(LightningDataModule):
         patch_size,
         batch_size,
         indicator=lambda _: True,
-        grouper=None,
+        grouper=lambda item: item[IMAGE],
         cache_dir=None,
         num_workers=0,
         random_state=0,
@@ -84,7 +97,11 @@ class ContrastiveDataModule(LightningDataModule):
 
     def setup(self, stage=None):
         if self.cache_dir:
-            bash(f'rsync -ru "{self.image_dir}" "{self.cache_dir}"')
+            bash(f'mkdir -p {self.cache_dir}')
+            img_paths = bash(f'cd {self.image_dir} && find -type f')
+            cache_paths = bash(f'cd {self.cache_dir} && find -type f')
+            if sorted(img_paths) != sorted(cache_paths):
+                bash(f'ls {self.image_dir} | parallel -I% rsync -ruq {self.image_dir}/% {self.cache_dir}/')
             img_dir = self.cache_dir
         else:
             img_dir = self.img_dir
@@ -107,41 +124,24 @@ class ContrastiveDataModule(LightningDataModule):
                 subjects.append(tio.Subject(**data))
                 
         self.dataset = tio.SubjectsDataset(subjects)
-        self.train_sampler = GroupSampler(
+        self.train_dataset = GroupSampler(
             self.dataset.dry_iter(),
             num_samples=2,
             group_fn=self.grouper,
             random_state=self.random_state,
-            transform=self._get_train_transform()
+            transform=self._transform
         )
+        self.test_dataset = apply_transform(self.dataset, self._transform)
         
-    def _get_train_transform(self):
-        random_apply = lambda tx, p: transforms.RandomApply([tx],p)
-        transform = transforms.Compose([
-            random_apply(transforms.RandomAffine(
-                degrees=180, 
-                scale=(0.8,1.2),
-                fill=255,
-                interpolation=transforms.InterpolationMode.BILINEAR,
-            ),  p=0.5),
-            random_apply(transforms.ColorJitter(
-                brightness=0.1, 
-                contrast=0.1, 
-                saturation=0.1, 
-                hue=0.1,
-            ),  p=0.5),
-            transforms.RandomCrop(self.patch_size)
-        ])
-        def f(item):
-            item = {**item}
-            item[IMAGE] = transform(item[IMAGE][tio.DATA].squeeze(-1))
-            item[IMAGE] = item[IMAGE].float() / 255
-            return item
-        return f
+    def _transform(self, item):
+        item = {**item}
+        item[IMAGE] = item[IMAGE][tio.DATA].squeeze(-1)
+        item[IMAGE] = item[IMAGE].float() / 255
+        return item
         
     def train_dataloader(self):
         dataloader = DataLoader(
-            self.train_sampler, 
+            self.train_dataset, 
             num_workers=self.num_workers,
             #prefetch_factor=2,
             #pin_memory=True,
@@ -152,14 +152,11 @@ class ContrastiveDataModule(LightningDataModule):
         )
         return dataloader
     
-    def predict_dataloader(self):
+    def test_dataloader(self):
         dataloader = DataLoader(
-            self.dataset, 
+            self.test_dataset, 
             num_workers=self.num_workers,
-            #prefetch_factor=2,
-            #pin_memory=True,
-            #persistent_workers=True,
-            batch_size=self.batch_size,
+            batch_size=self.batch_size // ((self.image_size // self.patch_size) ** 2),
             shuffle=False,
             drop_last=False
         )

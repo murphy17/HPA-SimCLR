@@ -1,0 +1,148 @@
+# 10.1371/journal.pone.0116125
+# Table S4
+region,gene
+glomerulus,PODXL
+glomerulus,TSPAN33
+glomerulus,FGF1
+glomerulus,NPHS2
+glomerulus,SLC5A3
+glomerulus,PTH2R
+glomerulus,GPR110
+glomerulus,TRIM6
+glomerulus,NPHS1
+glomerulus,PTPRO
+glomerulus,SLC25A48
+glomerulus,CRB2
+proximal tubule,ALDOB
+proximal tubule,GATM
+proximal tubule,PDZK1IP1
+proximal tubule,ASS1
+proximal tubule,MIOX
+proximal tubule,PAH
+proximal tubule,BHMT
+proximal tubule,NAT8
+proximal tubule,PCK1
+proximal tubule,C19orf77
+proximal tubule,GSTA2
+proximal tubule,PDZK1
+proximal tubule,ACY1
+proximal tubule,BHMT2
+proximal tubule,ACSM2Bx
+proximal tubule,PEPD
+proximal tubule,SLC3A1
+proximal tubule,HPD
+proximal tubule,SLC13A3
+proximal tubule,HRSP12
+proximal tubule,KNG1
+proximal tubule,SLC22A8
+proximal tubule,GLYAT
+proximal tubule,C11orf54
+proximal tubule,BBOX1
+proximal tubule,DPEP1
+proximal tubule,CMBL
+proximal tubule,GLYATL1
+proximal tubule,DDC
+proximal tubule,KHK
+proximal tubule,SLC7A7
+proximal tubule,FMO1
+proximal tubule,SHMT1
+proximal tubule,DHRS4
+proximal tubule,DPYS
+proximal tubule,PBLD
+proximal tubule,SLC34A1
+proximal tubule,PCK2
+proximal tubule,FAM151A
+proximal tubule,SLC7A8
+proximal tubule,FTCD
+proximal tubule,XPNPEP2
+proximal tubule,AGMAT
+proximal tubule,DMGDH
+proximal tubule,AK4
+proximal tubule,GGT1
+proximal tubule,KL
+proximal tubule,CUBN
+proximal tubule,EHHADH
+proximal tubule,AGXT2
+proximal tubule,NOX4
+proximal tubule,APOM
+proximal tubule,SLC16A4
+proximal tubule,SLC22A12
+proximal tubule,QPRT
+proximal tubule,SLC16A9
+proximal tubule,SLC4A4
+proximal tubule,SORD
+proximal tubule,CRYAA
+proximal tubule,SLC17A3
+proximal tubule,TMEM174
+proximal tubule,SLC6A19
+proximal tubule,SLC27A2
+proximal tubule,ACMSD
+proximal tubule,LRP2
+proximal tubule,SLC13A1
+proximal tubule,ALDH8A1
+proximal tubule,SLC36A2
+proximal tubule,SLC16A12
+proximal tubule,DAO
+proximal tubule,RGN
+proximal tubule,SLC7A9
+proximal tubule,SFXN2
+proximal tubule,SLC5A2
+proximal tubule,SLC5A10
+proximal tubule,ACY3
+proximal tubule,SLC22A7
+proximal tubule,CHDH
+proximal tubule,SLC22A11
+proximal tubule,SLC2A9
+proximal tubule,CYP4F2
+proximal tubule,SLC23A1
+proximal tubule,IL17RB
+proximal tubule,SLC13A2
+proximal tubule,C7orf10
+proximal tubule,MAPT
+proximal tubule,PAQR5
+proximal tubule,UGT3A1
+proximal tubule,PAX2
+proximal tubule,ASPA
+proximal tubule,SLC28A1
+proximal tubule,PKLR
+proximal tubule,MYOM3
+proximal tubule,ASPDH
+proximal tubule,KMO
+proximal tubule,REN
+proximal tubule,ENPP6
+proximal tubule,SLC6A12
+proximal tubule,PALM3
+proximal tubule,CDH6
+proximal tubule,SLC34A3
+proximal tubule,ABCC2
+proximal tubule,SLC10A2
+proximal tubule,SLC22A13
+proximal tubule,LYG1
+proximal tubule,SLC6A18
+proximal tubule,MNS1
+proximal tubule,RP11-407N17.3
+proximal tubule,ABCA4
+proximal tubule,ARSF
+proximal tubule,SLC5A11
+proximal tubule,FAM131C
+proximal tubule,PNMA6A
+proximal tubule,C9orf135
+proximal tubule,RIPPLY1
+proximal tubule,CALCR
+proximal tubule,INSRR
+distal tubule,UMOD
+distal tubule,SLC12A1
+distal tubule,CALB1
+distal tubule,KCNJ1
+distal tubule,SLC12A3
+distal tubule,CLDN8
+distal tubule,CASR
+distal tubule,GLTPD2
+distal tubule,TFAP2B
+collecting duct,AQP2
+collecting duct,HPN
+collecting duct,TMEM213
+collecting duct,ATP6V0D
+collecting duct,PVALB
+collecting duct,RHBG
+collecting duct,SLC4A9
