@@ -45,7 +45,7 @@ class SoftmaxRegression(BaseEstimator, RegressorMixin):
             
         torch.manual_seed(self.random_state)
             
-        device = 'cuda'
+        device = 'cpu'
         
         X = torch.tensor(X,dtype=torch.float32,device=device)
         Y = torch.tensor(y,dtype=torch.float32,device=device)

@@ -105,7 +105,7 @@ class ContrastiveDataModule(LightningDataModule):
                 bash(f'ls {self.image_dir} | parallel -I% rsync -ruq {self.image_dir}/% {self.cache_dir}/')
             img_dir = self.cache_dir
         else:
-            img_dir = self.img_dir
+            img_dir = self.image_dir
 
         subjects = []
         
