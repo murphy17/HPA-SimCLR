@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.random as npr
 import pandas as pd
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.preprocessing import StandardScaler
@@ -93,24 +94,26 @@ class SoftmaxRegression(BaseEstimator, RegressorMixin):
         
         return loss
     
-# one-vs-rest platt scaling
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_predict, KFold
+# # one-vs-rest platt scaling -- found this was irreproducible
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.model_selection import cross_val_predict, KFold
 
-def platt_scaling(scores, labels):
-    lm = LogisticRegression(penalty='none')
-    idx = list(set(scores.index)&set(labels.index))
-    scores = {region:cross_val_predict(
-        lm,
-        scores.loc[idx],
-        labels[region][idx],
-        cv=KFold(5,shuffle=True,random_state=0),
-        method='predict_proba'
-    )[:,1] for region in labels.columns}
-    scores = pd.DataFrame(
-        scores,
-        index=idx,
-        columns=labels.columns
-    )
-    scores /= scores.sum(1).values[:,None]
-    return scores
+# def platt_scaling(scores, labels):
+#     lm = LogisticRegression(penalty='none',random_state=0)
+#     idx = list(set(scores.index)&set(labels.index))
+#     rng = npr.RandomState(0)
+#     rng.shuffle(idx)
+#     scores = {region:cross_val_predict(
+#         lm,
+#         scores.loc[idx],
+#         labels[region][idx],
+#         cv=5,
+#         method='predict_proba'
+#     )[:,1] for region in labels.columns}
+#     scores = pd.DataFrame(
+#         scores,
+#         index=idx,
+#         columns=labels.columns
+#     )
+#     scores /= scores.sum(1).values[:,None]
+#     return scores
