@@ -4,13 +4,13 @@ ISMB 2022
 
 To run a model pretrained on HPA kidney images on a small example dataset of 10 genes:
 
-```
+`
 git clone git@github.com:murphy17/HPA-SimCLR.git && cd HPA-SimCLR
 conda env create -f environment.yml
 conda activate HumanProteinAtlas
 cd ./data && tar -xvzf example.tar.gz && cd ..
-python run.py --image_dir ./data/example/images --gex_table ./data/example/kidney_rna.csv --output_dir ./data/example --checkpoint ./data/kidney.ckpt
-```
+python run.py --image_dir ./data/example/images --gex_table ./data/example/kidney_rna.csv --output_dir ./data/example --checkpoint ./data/weights/kidney.ckpt
+`
 
 - `--image_dir` must specify a folder of uniquely-named PNG images. Each PNG must have an accompanying JSON file of the same name with at minimum a string-valued field 'Gene'.
 - `--gex_table` must specify a (genes x cell-types) CSV derived from an scRNA dataset, describing the mean counts of each gene in cells of each type. These genes must match the 
