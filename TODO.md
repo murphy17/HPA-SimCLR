@@ -2,9 +2,6 @@
 
 - Finish refactoring
     - The results figures(?) - 7_Additional_Figures?
-- Test run the example
-    - hceckpoint loading odesnt work
-    - Write the readme
 
 - Run COMET
     - figure out wtf those stats mean!!!
@@ -35,3 +32,10 @@
      - A clean PDF version of your manuscript
     
 - Rebuttal letter
+
+
+# DONE
+
+- Test run the example
+    - hceckpoint loading odesnt work
+    - Write the readme
