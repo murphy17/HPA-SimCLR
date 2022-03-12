@@ -5,21 +5,14 @@
     - ***enrichemnt analysis***
 
 - Run COMET
-    - figure out wtf those stats mean!!!
-
-- DONOR ANALYSIS
-- Justify Densenet
-- Table for dataset usage
-- ***Weasel out of antibodies***
-    - just mention the ab namesm more frequently
+    - ***figure out how to produce ROC!!!***
 
 - Testis
-    - generate JSONs
     - Train on testis
-    - Download ghosal data
+    - Download ghosal predicitons
 
 - Final fomratting
-    - ***Regenerate figures @ 300dpi***
+    - Regenerate figures @ 300dpi ***including the UMAP***
     - Figures ordering
     - a) Your revised manuscript, in PDF format, HIGHLIGHTING changes in RED font.
     - b) A letter, in PDF format, describing how you have addressed the reviews
@@ -33,9 +26,18 @@
 - Rebuttal letter
 
 - Writing
+    - ***Table explaining datasets***
+    - ***Donor analysis***
     - ROCs for ablated model
+    - Supplement: testis analysis, procedure (Scanpy, how I labelled)
     - Added t-test
     - Removal of Platt scaling
+    - replace MI discussion with Classification accuracy of linear model
+    - Weasel out of antibodies
+    - Justify Densenet
+    - There's really nothing out there like HPA, although this approach can be applied once trained to any IHC image
+
+- Supplement figure on kidney cancer images?
 
 # DONE
 

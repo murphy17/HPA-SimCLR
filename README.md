@@ -1,5 +1,6 @@
 # Self-supervised learning of cell type specificity from immunohistochemical images
 Michael Murphy, Stefanie Jegelka, Ernest Fraenkel
+
 ISMB 2022
 
 To run a model pretrained on HPA kidney images on a small example dataset of 10 genes:
