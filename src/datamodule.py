@@ -85,6 +85,16 @@ class ContrastiveDataModule(LightningDataModule):
         super().__init__()
         self.save_hyperparameters()
         
+        # kludge
+        if isinstance(indicator,tuple) and isinstance(indicator[0],str) and isinstance(indicator[1],set):
+            ind_key, ind_vals = indicator
+            def indicator(item):
+                return item[ind_key] in ind_vals
+        if isinstance(grouper,str):
+            grp_key = grouper
+            def grouper(item):
+                return item[grp_key]
+        
         self.image_dir = image_dir
         self.image_ext = image_ext
         self.image_size = image_size
@@ -94,7 +104,7 @@ class ContrastiveDataModule(LightningDataModule):
         self.grouper = grouper
         self.cache_dir = expandvars(cache_dir) if cache_dir else None
         self.num_workers = num_workers
-        self.random_state = random_state
+        self.random_state = random_state    
 
     def setup(self, stage=None):
         if self.cache_dir:
@@ -112,6 +122,7 @@ class ContrastiveDataModule(LightningDataModule):
         transform = tio.CropOrPad((self.image_size,self.image_size,1),padding_mode=1)
         
         json_paths = bash(f'find {img_dir} -type f -name "*.json" -not -path "*/.*"')
+        
         for json_path in json_paths:
             with open(json_path,'r') as f:
                 data = json.load(f)

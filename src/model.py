@@ -5,7 +5,7 @@ from torchvision import models
 from pytorch_lightning import LightningModule
 from kornia import augmentation as ka
 
-EPS = 1e-8
+EPSILON = 1e-8
 
 class ContrastiveEmbedding(LightningModule):
     def __init__(
@@ -15,7 +15,9 @@ class ContrastiveEmbedding(LightningModule):
         encoder_type='densenet121',
         temperature=1.0,
         learning_rate=5e-4,
+        positive_masking=False,
         negative_masking=True,
+        stratify_on=None,
         **kwargs
     ):
         super().__init__()
@@ -26,6 +28,7 @@ class ContrastiveEmbedding(LightningModule):
         self.encoder_type = encoder_type
         self.temperature = temperature
         self.learning_rate = learning_rate
+        self.positive_masking = positive_masking
         self.negative_masking = negative_masking
         
         encoder, encoder_dim = self._get_encoder(encoder_type)
@@ -89,7 +92,7 @@ class ContrastiveEmbedding(LightningModule):
         encoder = nn.Sequential(*encoder)
         return encoder, output_dim
 
-    def infonce_loss(self, z1, z2, temperature, mask=None, symmetrize=True):
+    def infonce_loss(self, z1, z2, temperature, pos_mask=None, neg_mask=None, symmetrize=True):
         # Avoid precision issues with FP16
         with torch.cuda.amp.autocast(enabled=False):
             z1 = z1.to(torch.float32)
@@ -100,26 +103,25 @@ class ContrastiveEmbedding(LightningModule):
             
             sim12 = z1 @ z2.T / temperature
 
-            pos_loss = -torch.diag(sim12).mean()
+            #log_pos_mask = 0 if pos_mask is None else torch.log(pos_mask)
+            pos_mask = 1 if pos_mask is None else pos_mask
+            log_neg_mask = 0 if neg_mask is None else torch.log(neg_mask)
             
-            if mask is not None:
-                sim12 += mask.log()
+            pos_loss = -torch.diag(sim12 * pos_mask).mean()
             
             if symmetrize:
                 neg_loss = (
-                    torch.logsumexp(sim12, dim=0).mean() +
-                    torch.logsumexp(sim12, dim=1).mean()
+                    torch.logsumexp(sim12 + log_neg_mask, dim=0).mean() +
+                    torch.logsumexp(sim12 + log_neg_mask, dim=1).mean()
                 ) / 2
             else:
-                neg_loss = torch.logsumexp(sim12, dim=0).mean()
+                neg_loss = torch.logsumexp(sim12 + log_neg_mask, dim=0).mean()
 
             return pos_loss + neg_loss
 
     def training_step(self, batch, batch_idx):
         batch1, batch2 = batch
         x1, x2 = batch1['image'], batch2['image']
-        N = x1.shape[0]
-        d1, d2 = batch1['Patient'], batch2['Patient']
         
         x1 = self.transform(x1)
         x2 = self.transform(x2)
@@ -130,10 +132,18 @@ class ContrastiveEmbedding(LightningModule):
         z1 = self.projection_head(z1)
         z2 = self.projection_head(z2)
         
+        if self.positive_masking:
+            p1, p2 = batch1[self.positive_masking], batch2[self.positive_masking]
+            pos_mask = (p1 != p2).float()
+        else:
+            pos_mask = None
+        
         if self.negative_masking:
-            neg_mask = (d1.view(-1,1) == d2.view(1,-1)).float()
+            N = x1.shape[0]
+            n1, n2 = batch1[self.negative_masking], batch2[self.negative_masking]
+            neg_mask = (n1.view(-1,1) == n2.view(1,-1)).float()
             neg_mask[range(N),range(N)] = 0
-            renorm = neg_mask.sum(1,keepdim=True).clip(EPS,float('inf')) * (N-1)
+            renorm = neg_mask.sum(1,keepdim=True).clip(EPSILON,float('inf')) * (N-1)
             neg_mask = neg_mask / renorm
             neg_mask[range(N),range(N)] = 1
         else:
@@ -141,7 +151,8 @@ class ContrastiveEmbedding(LightningModule):
             
         infonce_loss = self.infonce_loss(
             z1, z2,
-            mask=neg_mask,
+            pos_mask=pos_mask,
+            neg_mask=neg_mask,
             temperature=self.temperature,
             symmetrize=True
         )

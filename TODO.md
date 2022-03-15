@@ -1,18 +1,14 @@
 # TODO
 
-- Finish refactoring
-    - The results figures(?) - 7_Additional_Figures?
-    - ***enrichemnt analysis***
+- Run efficientnet
 
-- Run COMET
-    - ***figure out how to produce ROC!!!***
-
-- Testis
-    - Train on testis
-    - Download ghosal predicitons
+- Donors
+    - Rerun (w/o negatives)
+    - ***change donor to batch***
+    - ***rerun everything if it works really well!?!?!*** oh no, no no no. no just pop it in the supplement. it probably woun't be way better...
 
 - Final fomratting
-    - Regenerate figures @ 300dpi ***including the UMAP***
+    - **Regenerate figures @ 300dpi including the UMAP***
     - Figures ordering
     - a) Your revised manuscript, in PDF format, HIGHLIGHTING changes in RED font.
     - b) A letter, in PDF format, describing how you have addressed the reviews
@@ -26,20 +22,26 @@
 - Rebuttal letter
 
 - Writing
-    - ***Table explaining datasets***
     - ***Donor analysis***
     - ROCs for ablated model
-    - Supplement: testis analysis, procedure (Scanpy, how I labelled)
-    - Added t-test
     - Removal of Platt scaling
     - replace MI discussion with Classification accuracy of linear model
-    - Weasel out of antibodies
-    - Justify Densenet
-    - There's really nothing out there like HPA, although this approach can be applied once trained to any IHC image
+    - Update AUCs
+    - ***Redo the fucking results section***
+    - ***Weasel out of antibodies***
 
-- Supplement figure on kidney cancer images?
+- Refactoring
+    - Cleanup folder
+    - The results figures(?) - 7_Additional_Figures?
+    - Make sure all the aux fiels used are present
+    - degit the old notebook
+
 
 # DONE
+
+- COMET
+
+- Testis
 
 - Run no_importance, no_grouping
 
