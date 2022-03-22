@@ -20,3 +20,5 @@ python run.py --image_dir ./data/images --gex_table ./data/kidney_rna.csv --outp
 - `--output_dir` will be created if it does not exist, and will receive two CSV files: `embeddings.csv`, containing a vector-valued embedding for each image, and `scores.csv`, containing the classifier's predictions.
 - `--checkpoint` is optional; if not specified, a model will be trained on the entire set of input images. Progress and checkpoints will be logged to `./lightning_logs` (the PyTorch Lightning default).
 - See `run.py` for additional options.
+
+See branch `main` for our Jupyter notebooks used in the paper.
