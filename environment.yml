@@ -1,4 +1,4 @@
-name: HumanProteinAtlas
+name: HPA-SimCLR
 channels:
   - pytorch
   - http://conda.anaconda.org/gurobi
