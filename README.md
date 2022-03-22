@@ -3,7 +3,7 @@ Michael Murphy, Stefanie Jegelka, Ernest Fraenkel
 
 ISMB 2022
 
-`embeddings.csv` and `scores.csv` contain the embeddings and predictions respectively for ??? IHC images of kidney from the HPA as described in the paper.
+`data/embeddings.csv` and `/data/scores.csv` contain the embeddings and predictions respectively for IHC images of kidney from the HPA as described in the paper.
 
 To run a model pretrained on HPA kidney images on a small example dataset of 10 genes:
 
