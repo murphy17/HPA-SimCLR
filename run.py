@@ -1,12 +1,7 @@
 # Self-supervised learning of cell type specificity from immunohistochemical images
 # Michael Murphy, Stefanie Jegelka, Ernest Fraenkel
 
-# to run pretrained model on small example dataset of 10 genes:
-
-# conda env create -f environment.yml
-# conda activate HumanProteinAtlas
-# cd ./data && tar -xvzf example.tar.gz && cd ..
-# python run.py --image_dir ./data/example/images --gex_table ./data/example/kidney_rna.csv --output_dir ./data/example --checkpoint ./data/kidney.ckpt
+# See README.md for example usage.
 
 import argparse
 import numpy as np
@@ -44,6 +39,8 @@ def main():
     parser.add_argument('--temperature', type=float, required=False, default=1.0)
     parser.add_argument('--learning_rate', type=float, required=False, default=5e-4)
     parser.add_argument('--encoder', type=str, required=False, default='densenet121')
+    parser.add_argument('--positive_rejection', type=str, required=False, default=False)
+    parser.add_argument('--negative_rejection', type=str, required=False, default='Patient')
     parser.add_argument('--random_state', type=int, required=False, default=0)
     parser.add_argument('--precision', type=int, required=False, default=32)
     parser.add_argument('--gpus', type=int, required=False, default=0)
@@ -65,7 +62,7 @@ def main():
     
     rna = pd.read_csv(args.gex_table, sep=',', index_col=0).astype(float)
     rna.values[:] = rna.values / rna.values.sum(1,keepdims=True)
-
+    
     dm = ContrastiveDataModule(
         args.image_dir,
         image_ext=args.image_ext,
@@ -94,7 +91,9 @@ def main():
             patch_size=args.patch_size,
             encoder_type=args.encoder,
             temperature=args.temperature,
-            learning_rate=args.learning_rate
+            learning_rate=args.learning_rate,
+            positive_masking=args.positive_rejection,
+            negative_masking=args.negative_rejection,
         )
 
     else:
@@ -106,6 +105,8 @@ def main():
             encoder_type=args.encoder,
             temperature=args.temperature,
             learning_rate=args.learning_rate,
+            positive_masking=args.positive_rejection,
+            negative_masking=args.negative_rejection,
         )
 
         trainer = Trainer(
