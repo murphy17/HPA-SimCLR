@@ -10,7 +10,7 @@ To run a model pretrained on HPA kidney images on a small example dataset of 10 
 ```
 git clone git@github.com:murphy17/HPA-SimCLR.git && cd HPA-SimCLR
 conda env create -f environment.yml
-conda activate HumanProteinAtlas
+conda activate HPA_SimCLR_Demo
 cd ./data && tar xvzf images.tar.gz && tar xvzf weights.tar.gz && cd ..
 python run.py --image_dir ./data/images --gex_table ./data/kidney_rna.csv --output_dir ./data/example --checkpoint ./data/weights/kidney_final.ckpt
 ```

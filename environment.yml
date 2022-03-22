@@ -1,4 +1,4 @@
-name: HPA-SimCLR
+name: HPA_SimCLR_Demo
 channels:
   - pytorch
   - http://conda.anaconda.org/gurobi
